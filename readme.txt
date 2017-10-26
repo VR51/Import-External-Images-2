@@ -53,6 +53,11 @@ You can make it ignore any domain you want on the settings page, in case you wor
 
 == Changelog ==
 
+= 2.0.1 =
+
+- Bugfix: Use home_url instead of siteurl to prevent external image false positives. Thanks to budrick.
+- Bugfix: Fixed handling of PDF files. Thanks to dcbradley.
+
 = 2.0.0 =
 
 - Released as version 2 under its own Github repository so that we can better manage bug reports.
