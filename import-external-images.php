@@ -410,7 +410,7 @@ function external_image_getext( $file ) {
 function external_image_get_img_tags( $post_id ) {
 	$post = get_post( $post_id );
 	$w = get_option( 'external_image_whichimgs' );
-	$s = get_option( 'siteurl' );
+	$s = home_url();
 
 	$excludes = get_option( 'external_image_excludes' );
 	$excludes = explode( ',' , $excludes );
