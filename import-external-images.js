@@ -3,7 +3,7 @@
  */
 	
 	/**
-	 * Begin the process of fetching images
+	 * Begin the process of re-sizing all of the checked images
 	 */
 	function external_images_import_images() {
 		
@@ -18,9 +18,10 @@
 		
 		target.html('');
 		target.show();
+		//jQuery(document).scrollTop(target.offset().top);
 	
 		var data = {
-			action: 'external_image_get_backcatalog_ajax',
+			action: 'external_image_get_backcatalog_ajax'
 		};
 		
 		jQuery.post( ajaxurl, data , function(response) {
@@ -39,65 +40,39 @@
 	}
 	
 	/** 
-	 * Messages
+	 * recursive function for resizing images
 	 */
 	function external_images_import_all(posts,next_post) {
 		
-		if (next_post >= posts.length) 
+		if (next_post >= posts.length) {
 			return external_images_import_complete();
-		
-		var target_message = jQuery('#import_posts');
+		}
 		
 		var target = jQuery('#import_process');
 		
-		var d = new Date();
-		var current_time = d.getTime();
-		
-		if ( current_time > ( window.import_images_start_time + 60000 ) && window.import_images_one_minute != 'set' ) {
-			target_message.prepend('<div>1 minute passed... Looking good!</div>');
-			window.import_images_one_minute = 'set';
-		}
-		if ( current_time > ( window.import_images_start_time + 180000 ) && window.import_images_three_minute != 'set' ) {
-			target_message.prepend('<div>3 minutes passed... Still looking good!</div>');
-			window.import_images_three_minute = 'set';
-		}			
-		if ( current_time > ( window.import_images_start_time + 300000 ) && window.import_images_five_minute != 'set') {
-			target_message.prepend('<div>5 minutes have passed... Still looking good... But if we seem stuck on one post, you may want to refresh and try again.</div>');
-			window.import_images_five_minute = 'set';
-		}
-		if ( current_time > ( window.import_images_start_time + 600000 ) && window.import_images_ten_minute != 'set') {
-			target_message.prepend('<div>10 minutes have passed... Woah! You have lot of images.</div>');
-			window.import_images_ten_minute = 'set';
-			var lets_stop_here = true;
-		}
-		if ( current_time > ( window.import_images_start_time + 1200000 ) && window.import_images_twenty_minute != 'set') {
-			target_message.prepend("<div style='color:#990000'>20 minutes have passed... You REALLY have lot of images... Let's take a break. Refresh this page to start again.</div>");
-			window.import_images_twenty_minute = 'set';
-		}
 		var data = {
 			action: 'external_image_import_all_ajax',
-			import_images_post: posts[next_post],
+			import_images_post: posts[next_post]
 		};
 		
-		if ( window.import_images_twenty_minute != 'set' ) {
-				
-			jQuery.post( ajaxurl, data , function(response) {
-				//alert(window.import_images_start_time + ' -- ' + current_time);
-				var result = JSON.parse(response);
-				 
-				target.prepend('<div style="padding:2px 30px 0 10px;">'+ result +'</div>');
-				target.slideDown();
-	
-				// recurse
-				external_images_import_all(posts,next_post+1);
-			});
 		
-		}
+		jQuery.post( ajaxurl, data , function(response) {
+			// alert(window.import_images_start_time + ' -- ' + current_time);
+			// alert('Got this from the server: ' + response);
+			console.log(response);
+			var result = JSON.parse(response);
+
+			target.prepend('<div style="padding:2px 30px 0 10px;">'+ result +'</div>');
+			target.slideDown();
+
+			// recurse
+			external_images_import_all(posts,next_post+1);
+		});
 		
 	}
 	
 	/**
-	 * fired when all images have been fetched
+	 * fired when all images have been resized
 	 */
 	function external_images_import_complete() {
 		var target = jQuery('#import_process'); 
