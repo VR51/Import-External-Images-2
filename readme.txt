@@ -5,7 +5,7 @@ Donate Link: https://paypal.me/vr51
 Plugin URL: https://github.com/VR51/Import-External-Images-2
 Tags: images, gallery, photobloggers, attachments, photo, links, external, photographers, Flickr, save, download, fetch, external, import
 Requires at least: 3.2
-Tested up to: 4.8
+Tested up to: 4.9
 Stable tag: trunk
 
 === Import External Images 2 ===
@@ -26,7 +26,7 @@ The plugin shows a number next to the title of posts that contain external image
 
 = Credits =
 
-Version 1.5.x release by [VR51](https://github.com/VR51/Import-External-Images-2).
+Version 1.5.x onwards: release by [VR51](https://github.com/VR51/Import-External-Images-2).
 
 This plugin is based Import External Images by Marty Thornley https://github.com/MartyThornley/import-external-images, which is based on "Add Linked Images to Gallery" plugin by http://www.bbqiguana.com/
 
@@ -47,11 +47,21 @@ This plugin will find IMG attachments or PDF attachments within posts and pages.
 
 Yes!
 
-= What if i don't want to import images from a third party image hosting site? =
+= What if I don't want to import images from a third party image hosting site? =
 
 You can make it ignore any domain you want on the settings page, in case you work with a CDN or photo hosting site and want to keep those images where they are.
 
+= This works on single pages after a post import but the bulk option fails. What gives? =
+
+Imported posts (and pages) need to have been visited at least once by either a real person or a bot (e.g. page scraper) before Import External Images 2 can open posts, scan them, set transients for them then import external images and update the post content.
+
+Use a plugin with an autocache agent (or something similar) or visit posts manually to force WordPress to register the post properly then retry to import your images.
+
 == Changelog ==
+
+= 2.0.2 =
+
+Various bugfixes.
 
 = 2.0.1 =
 
