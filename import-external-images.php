@@ -2,7 +2,7 @@
 /*
 Plugin Name: Import External Images 2
 Plugin URI:  https://github.com/VR51/import-external-images-2
-Version: 2.0.1
+Version: 2.0.2
 Description: Examines the text of posts and pages and makes local copies of all the images linked though IMG tags, adding them as media attachments to the post or page.
 Author: VR51, Marty Thornley
 Author URI: https://github.com/VR51/import-external-images-2
@@ -50,14 +50,14 @@ define( 'EXTERNAL_IMAGES_ALLOW_BULK_MESSAGE' , false );
 
 $external_image_count = 0;
 
-$images_count_custom = get_option('external_image_images_count_custom', '20');
-if ( $images_count_custom <= 0 || $images_count_custom >= 21 ) {
-	$images_count_custom = 20;
+$images_count_custom = get_option('external_image_images_count_custom', '200');
+if ( $images_count_custom <= 0 || $images_count_custom >= 201 ) {
+	$images_count_custom = 200;
 }
 
-$posts_count_custom = get_option('external_image_posts_count_custom', '50');
-if ( $posts_count_custom <= 0 || $posts_count_custom >= 51 ) {
-	$posts_count_custom = 50;
+$posts_count_custom = get_option('external_image_posts_count_custom', '500');
+if ( $posts_count_custom <= 0 || $posts_count_custom >= 501 ) {
+	$posts_count_custom = 500;
 }
 
 require_once( ABSPATH . 'wp-admin/includes/file.php' );
@@ -159,10 +159,15 @@ function external_image_import_all_ajax() {
 	
 	// do what we need with image...
 	$response = external_image_import_images( $post_id , true );
+	$postTitle = $post->post_title;
 
-	$results = ( $response ? '<strong>' . $post->post_title . '</strong> had ('. $response .') images successfully imported and image link changes made.<br />' : '<strong>' . $post->post_title . ': </strong> No images imported - you might want to check whether they still exist!' );
+	if ($response) {
+		$results = "<strong>$postTitle:</strong> Images successfully imported and image link changes made.";
+	} else {
+		$results = "<strong>$postTitle:</strong> No images imported. Check whether they still exist!";
+	}
 
-	echo json_encode( $results  );
+	echo json_encode($results);
 	die(); // required by wordpress
 }
 
@@ -208,7 +213,7 @@ function external_image_menu() {
 function import_external_images_per_post() {
 
 	$external_images = external_image_get_img_tags( $_GET['post'] );
-	$images_count_custom = get_option('external_image_images_count_custom', '20');
+	$images_count_custom = get_option('external_image_images_count_custom', '200');
 
 	$html = '';
 	$images = '';
@@ -295,15 +300,14 @@ function external_image_import_images( $post_id , $force = false ) {
 	$imgs = external_image_get_img_tags($post_id); // Array of external image URLs
 	$images_count_custom = get_option('external_image_images_count_custom');
 	
-	$debugNew = array();
+	// $debugNew = array();
 	
 	$count = 0;
-	
 	for ( $i=0; $i<count($imgs); $i++ ) {
 		if ( isset($imgs[$i]) && is_external_file($imgs[$i]) && $count < $images_count_custom ) {
-			$new_img = external_image_sideload( $imgs[$i] , $post_id ); // $new_img = Localhost URI of the downloaded image
+			$new_img = external_image_sideload( $imgs[$i], $post_id ); // $new_img = Localhost URI of the downloaded image
 			if ($new_img && is_external_file($new_img) ) {
-					$content = str_replace( $imgs[$i], $new_img, $content );
+				$content = str_replace( $imgs[$i], $new_img, $content );
 				$replaced = true;
 				$count++;
 				// $debugNew[] .= $imgs[$i];
@@ -312,13 +316,13 @@ function external_image_import_images( $post_id , $force = false ) {
 	}
 	
 	if ( $replaced ) {
-		set_transient( 'saving_imported_images_'.$post_id , 'true' , 20 );
+		set_transient( 'saving_imported_images_'.$post_id , 'true' , HOUR_IN_SECONDS );
 		$update_post = array();
 		$update_post['ID'] = $post_id;
 		$update_post['post_content'] = $content;
 		wp_update_post($update_post);
 		_fix_attachment_links( $post_id );
-		$response = $count;
+		$response = true;
 	} else {
 		$response = false;
 	}
@@ -326,7 +330,6 @@ function external_image_import_images( $post_id , $force = false ) {
 	return $response;
 	
 	// $debugNew = implode( " : ", $debugNew);
-	
 	// return $debugNew;
 	
 }
@@ -340,40 +343,48 @@ function external_image_import_images( $post_id , $force = false ) {
  * @param string $desc Optional. Description of the image
  * @return string - just the image url on success, false on failure	
  */	
-function external_image_sideload( $file , $post_id , $desc = '' ) {
+function external_image_sideload( $file, $post_id, $desc = null ) {
 
-	if ( ! empty($file) && is_external_file( $file ) ) {
-
-		// Set variables for storage
-		// fix file filename for query strings
-		preg_match( '/[^\?]+\.(jpe?g|jpe|gif|png|pdf)\b/i', $file, $matches );
-		$file_array = array();
-		$file_array['name'] = basename($matches[0]);
-		$file_array['tmp_name'] = download_url( $file );
-
-		// If error storing temporarily, unlink
-		if ( is_wp_error( $file_array['tmp_name'] ) ) {
+    if ( ! empty( $file ) && is_external_file($file) ) {
+ 
+        // Set variables for storage, fix file filename for query strings.
+        preg_match( '/[^\?]+\.(jpe?g|jpe|gif|png|pdf)\b/i', $file, $matches );
+        if ( ! $matches ) {
+            return new WP_Error( 'image_sideload_failed', __( 'Invalid image URL' ) );
+        }
+ 
+        $file_array = array();
+        $file_array['name'] = basename( $matches[0] );
+        $file_array['tmp_name'] = download_url( $file );
+ 
+        // If error storing temporarily, unlink.
+        if ( is_wp_error( $file_array['tmp_name'] ) ) {
 			@unlink($file_array['tmp_name']);
 			$file_array['tmp_name'] = '';
 			return false;
-		}
+        }
+ 
 		$desc = $file_array['name'];
-		// do the validation and storage stuff
-		$id = media_handle_sideload( $file_array, $post_id, $desc );
-		// If error storing permanently, unlink
-		if ( is_wp_error($id) ) {
-			@unlink($file_array['tmp_name']);
-			return false;
-		} else {
+        // Do the validation and storage stuff.
+        $id = media_handle_sideload( $file_array, $post_id, $desc );
+ 
+        // If error storing permanently, unlink.
+        if ( is_wp_error( $id ) ) {
+            @unlink( $file_array['tmp_name'] );
+            return false;
+        // If attachment id was requested, return it early.
+        } else {
 			$src = wp_get_attachment_url( $id );
-		}
-
-	}
-
-	if ( !empty( $src ) && is_external_file( $src ) ) 
+        }
+ 
+    }
+ 
+    // Finally, check to make sure the file has been saved, then return the HTML.
+    if ( ! empty( $src ) && is_external_file( $src ) ) {
 		return $src;
-	else 
+       } else {
 		return false;
+	}
 }
 
 function external_image_getext( $file ) {
@@ -453,7 +464,7 @@ function external_image_get_img_tags( $post_id ) {
 
 function external_image_backcatalog() {
 
-	$numberposts = get_option('external_image_posts_count_custom', '50');
+	$numberposts = get_option('external_image_posts_count_custom', '500');
 	$posts = get_posts( array( 'numberposts' => $numberposts, 'post_type' => 'any', 'post_status' => 'any' ) );
 	echo '<h4>Processing Posts...</h4>';
 
@@ -502,7 +513,7 @@ function external_image_get_backcatalog() {
 	**/
 
 	$posts = get_posts( array( 'numberposts' => -1, 'post_type' => 'any', 'post_status' => 'any' ) );
-	$numberposts = get_option('external_image_posts_count_custom', '50');
+	$numberposts = get_option('external_image_posts_count_custom', '500');
 	$count_posts = 0;
 	$posts_to_import = array();
 	foreach( $posts as $post ) {
@@ -573,14 +584,14 @@ function external_image_options() {
 				<h3>How many images and posts to process</h3>
 				<p>The import process might stop if there are too many images and posts to process. Select lower values to process per run to improve the import process.</p>
 				<p><label for="external_image_images_count_custom">Images per Post</label><br>
-					<input type="number" name="external_image_images_count_custom" min="1" max="20" value="<?php echo (get_option('external_image_images_count_custom')); ?>">
+					<input type="number" name="external_image_images_count_custom" min="1" max="200" value="<?php echo (get_option('external_image_images_count_custom')); ?>">
 				</p>
-				<p class="howto">Default is 20. Maximum is 20.</p>
+				<p class="howto">Default is 200. Maximum is 200.</p>
 
 				<p><label for="external_image_posts_count_custom">Posts per Run</label><br>
-					<input type="number" name="external_image_posts_count_custom" min="1" max="50" value="<?php echo (get_option('external_image_posts_count_custom')); ?>">
+					<input type="number" name="external_image_posts_count_custom" min="1" max="500" value="<?php echo (get_option('external_image_posts_count_custom')); ?>">
 				</p>
-				<p class="howto">Default is 50. Maximum is 50.</p>
+				<p class="howto">Default is 500. Maximum is 500.</p>
 			</div>
 
 			<div style="width: 50%;display:inline;float:left;">
