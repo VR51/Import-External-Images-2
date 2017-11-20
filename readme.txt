@@ -26,7 +26,7 @@ The plugin shows a number next to the title of posts that contain external image
 
 = Credits =
 
-Version 1.5.x onwards: release by [VR51](https://github.com/VR51/Import-External-Images-2).
+Version 1.5.x onwards: Released by [VR51](https://github.com/VR51/Import-External-Images-2).
 
 This plugin is based Import External Images by Marty Thornley https://github.com/MartyThornley/import-external-images, which is based on "Add Linked Images to Gallery" plugin by http://www.bbqiguana.com/
 
@@ -61,7 +61,7 @@ Use a plugin with an autocache agent (or something similar) or visit posts manua
 
 = 2.0.2 =
 
-Various bugfixes.
+- Various bugfixes.
 
 = 2.0.1 =
 
