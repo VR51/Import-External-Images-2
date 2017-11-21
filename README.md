@@ -45,13 +45,16 @@ Yes!
 
 You can make it ignore any domain you want on the settings page, in case you work with a CDN or photo hosting site and want to keep those images where they are.
 
-= This works on single pages after a post import but the bulk option fails. What gives? =
+= This works on single pages after a post import but bulk image import fails. What gives? =
 
-Imported posts (and pages) need to have been visited at least once by either a real person or a bot (e.g. page scraper) before Import External Images 2 can open posts, scan them, set transients for them then import external images and update the post content.
-
-Use a plugin with an autocache agent (or something similar) or visit posts manually to force WordPress to register the post properly then retry to import your images.
+Sometimes pages need to be visited by the admin user before images will import. Use a sitemap to visit pages/posts or use the 'view' button next to each post in the bulk options page.
 
 == Changelog ==
+
+= 2.0.3 =
+
+- Various bugfixes
+- Added 'view' post button to bulk import admin page. A change in WP 4.9 prevents image imports unless a page has been viewed from the IP address of the admin user.
 
 = 2.0.2 =
 
