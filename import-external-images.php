@@ -687,8 +687,8 @@ function external_image_options() {
 									<td class="manage-column column-date-modified date" scope="col">' . $post_to_fix['post_modified'] . '</td>
 									<td class="manage-column column-title" scope="col">' . $post_to_fix['title'] . '</td>
 									<td class="manage-column column-images" scope="col">' . count($post_to_fix['images']) . ' images.</td>
-									<td class="manage-column column-edit" scope="col"><a href="' . admin_url('post.php?post='.$post_to_fix['id'].'&action=edit') . '" class="button-link" target="_blank">Edit Post</a>.</td>
-									<td class="manage-column column-view" scope="col"><a href="' . $post_to_fix['guid'] . '" class="button-link" target="_blank">Edit Post</a>.</td>
+									<td class="manage-column column-edit" scope="col"><a href="' . admin_url('post.php?post='.$post_to_fix['id'].'&action=edit') . '" class="button-link" target="_blank">Edit</a>.</td>
+									<td class="manage-column column-view" scope="col"><a href="' . $post_to_fix['guid'] . '" class="button-link" target="_blank">View</a>.</td>
 								</tr>';
 							$num++;
 						}
