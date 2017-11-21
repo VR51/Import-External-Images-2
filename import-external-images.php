@@ -2,7 +2,7 @@
 /*
 Plugin Name: Import External Images 2
 Plugin URI:  https://github.com/VR51/import-external-images-2
-Version: 2.0.2
+Version: 2.0.3
 Description: Examines the text of posts and pages and makes local copies of all the images linked though IMG tags, adding them as media attachments to the post or page.
 Author: VR51, Marty Thornley
 Author URI: https://github.com/VR51/import-external-images-2
@@ -294,6 +294,8 @@ function external_image_import_images( $post_id , $force = false ) {
 	if (wp_is_post_revision($post_id)) 
 		return;
 
+	wp_set_post_lock( $post_id );
+	
 	$post = get_post($post_id);
 	$replaced = false;
 	$content = $post->post_content;
@@ -634,6 +636,7 @@ function external_image_options() {
 						$posts_to_fix[$count]['title'] = $this_post->post_title;
 						$posts_to_fix[$count]['images'] = $images;
 						$posts_to_fix[$count]['id'] = $this_post->ID;
+						$posts_to_fix[$count]['guid'] = $this_post->guid;
 						$posts_to_fix[$count]['post_type'] = $this_post->post_type;
 						$posts_to_fix[$count]['post_date'] = $this_post->post_date;
 						$posts_to_fix[$count]['post_modified'] = $this_post->post_modified;
@@ -672,6 +675,7 @@ function external_image_options() {
 								<th class="manage-column column-title" scope="col">Title</th>
 								<th class="manage-column column-images" scope="col">Ext. Images</th>
 								<th class="manage-column column-edit" scope="col">Edit</th>
+								<th class="manage-column column-view" scope="col">View</th>
 							</thead>';
 						$html .= '<tbody>';
 						$num = 1;
@@ -684,6 +688,7 @@ function external_image_options() {
 									<td class="manage-column column-title" scope="col">' . $post_to_fix['title'] . '</td>
 									<td class="manage-column column-images" scope="col">' . count($post_to_fix['images']) . ' images.</td>
 									<td class="manage-column column-edit" scope="col"><a href="' . admin_url('post.php?post='.$post_to_fix['id'].'&action=edit') . '" class="button-link" target="_blank">Edit Post</a>.</td>
+									<td class="manage-column column-view" scope="col"><a href="' . $post_to_fix['guid'] . '" class="button-link" target="_blank">Edit Post</a>.</td>
 								</tr>';
 							$num++;
 						}
