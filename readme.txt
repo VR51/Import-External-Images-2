@@ -59,6 +59,11 @@ Use a plugin with an autocache agent (or something similar) or visit posts manua
 
 == Changelog ==
 
+= 2.0.3 =
+
+- Various bugfixes
+- Added 'view' post button to bulk import admin page. A change in WP 4.9 prevents image imports unless a page has been viewed from the IP address of the admin user.
+
 = 2.0.2 =
 
 - Various bugfixes.
