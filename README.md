@@ -26,7 +26,7 @@ Donate Link: https://paypal.me/vr51
 
 == Installation ==
 
-1. Download the "Import External Images" zip file.
+1. Download the "Import External Images 2" zip file.
 2. Upload to your WordPress plugins directory.
 3. Activate the plugin via the WordPress Plugins tab.
 4. Navigate to Media > Import Images or edit a post to import externally linked media.
@@ -35,7 +35,7 @@ Donate Link: https://paypal.me/vr51
 
 = How does this plugin work? =
 
-This plugin will find IMG attachments or PDF attachments within posts and pages. Any external attachments will be brought into downloaded to your site's media library and their links in posts/pages will be changed to those of your own website.
+This plugin will find IMG attachments or PDF attachments within posts and pages. Any external attachments will be downloaded to your site's media library and their links in posts/pages will be changed to those of the file in your own website's media library.
 
 = Does it work with MultiSite? =
 
@@ -43,11 +43,13 @@ Yes!
 
 = What if i don't want to import images from a third party image hosting site? =
 
-You can make it ignore any domain you want on the settings page, in case you work with a CDN or photo hosting site and want to keep those images where they are.
+You can use the settings page to make Import External Images 2 ignore domains.
 
-= This works on single pages after a post import but bulk image import fails. What gives? =
+= I can't use the bulk image importer to import images into multiple pages simulataneously. What gives? =
 
-Sometimes pages need to be visited by the admin user before images will import. Use a sitemap to visit pages/posts or use the 'view' button next to each post in the bulk options page.
+Sometimes pages need to be visited by the admin user before images will import. The pages only need to be briefly opened then closed in a browser tab in the same browser as your active admin session or in a different browser on the same machine (i.e. you don't need to be logged in when viewing the pages).
+
+Use the site's sitemap to visit pages or use the 'view' button next to each post in the bulk options page then run the importer again.
 
 == Changelog ==
 
