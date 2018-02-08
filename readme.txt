@@ -5,7 +5,7 @@ Donate Link: https://paypal.me/vr51
 Plugin URL: https://github.com/VR51/Import-External-Images-2
 Tags: images, gallery, photobloggers, attachments, photo, links, external, photographers, Flickr, save, download, fetch, external, import
 Requires at least: 3.2
-Tested up to: 4.9
+Tested up to: 4.9.3
 Stable tag: trunk
 
 === Import External Images 2 ===
