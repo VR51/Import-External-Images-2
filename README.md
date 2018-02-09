@@ -41,11 +41,19 @@ This plugin will find IMG attachments or PDF attachments within posts and pages.
 
 Yes!
 
-= What if i don't want to import images from a third party image hosting site? =
+= What if I don't want to import images from a third party image hosting site? =
 
 You can use the settings page to make Import External Images 2 ignore domains.
 
+= Images won't import. What can I do? =
+
+- Install (WP Sweep)[https://en-gb.wordpress.org/plugins/wp-sweep/] Visit Tools > Sweep then sweep the transients (it is the bottom option).
+- Confirm the server that hosts the images does not use hotlink protection. If images are protected you won't be able to download them in some cases.
+- Make sure the site that hosts the remote images is not in maintenance mode and is not blocking your own site's IP address.
+
 = I can't use the bulk image importer to import images into multiple pages simulataneously. What gives? =
+
+This bug began with the release of WordPress 4.9.1 and vanished with 4.9.3. Hopefully you will not meet this bug.
 
 Sometimes pages need to be visited by the admin user before images will import. The pages only need to be briefly opened then closed in a browser tab in the same browser as your active admin session or in a different browser on the same machine (i.e. you don't need to be logged in when viewing the pages).
 
