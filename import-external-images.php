@@ -300,7 +300,7 @@ function external_image_import_images( $post_id , $force = false ) {
 	$replaced = false;
 	$content = $post->post_content;
 	$imgs = external_image_get_img_tags($post_id); // Array of external image URLs
-	$images_count_custom = get_option('external_image_images_count_custom');
+	$images_count_custom = get_option('external_image_images_count_custom', 200);
 	
 	// $debugNew = array();
 	
