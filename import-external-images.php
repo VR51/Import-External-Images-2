@@ -265,7 +265,6 @@ function is_external_file( $file ) {
 	$extAlso = substr( $file , -5 );
 	if ( in_array( strtolower($extAlso) , $allowedAlso ) )
 		return true;
-
 	return false; 
 
 }
@@ -306,9 +305,9 @@ function external_image_import_images( $post_id , $force = false ) {
 	
 	$count = 0;
 	for ( $i=0; $i<count($imgs); $i++ ) {
-		if ( isset($imgs[$i]) && is_external_file($imgs[$i]) && $count < $images_count_custom ) {
+		if ( isset($imgs[$i]) && $count < $images_count_custom ) {
 			$new_img = external_image_sideload( $imgs[$i], $post_id ); // $new_img = Localhost URI of the downloaded image
-			if ($new_img && is_external_file($new_img) ) {
+			if ($new_img) {
 				$content = str_replace( $imgs[$i], $new_img, $content );
 				$replaced = true;
 				$count++;
@@ -347,7 +346,7 @@ function external_image_import_images( $post_id , $force = false ) {
  */	
 function external_image_sideload( $file, $post_id, $desc = null ) {
 
-    if ( ! empty( $file ) && is_external_file($file) ) {
+    if ( ! empty( $file ) ) {
  
         // Set variables for storage, fix file filename for query strings.
         preg_match( '/[^\?]+\.(jpe?g|jpe|gif|png|pdf)\b/i', $file, $matches );
@@ -438,7 +437,8 @@ function external_image_get_img_tags( $post_id ) {
 
 	for ( $i=0; $i<count($matches[0]); $i++ ) {
 		$uri = $matches[1][$i];
-		$path_parts = pathinfo($uri);
+		$url_parts = parse_url($uri);
+		$path_parts = pathinfo($url_parts['path']);
 
 		// check all excluded urls
 		if ( is_array( $excludes ) ) {
@@ -454,7 +454,7 @@ function external_image_get_img_tags( $post_id ) {
 			//make sure it's external
 			if ( $s != substr( $uri , 0 , strlen( $s ) ) && ( !isset( $mapped ) || $mapped != substr( $uri , 0 , strlen( $mapped ) ) ) ) {
 				$path_parts['extension'] = (isset($path_parts['extension'])) ? strtolower($path_parts['extension']) : false;
-				if ( $path_parts['extension'] == 'gif' || $path_parts['extension'] == 'jpg' || $path_parts['extension'] == 'bmp' || $path_parts['extension'] == 'png' || $path_parts['extension'] == 'pdf')
+				if ( $path_parts['extension'] == 'gif' || $path_parts['extension'] == 'jpg' ||  $path_parts['extension'] == 'jpeg' || $path_parts['extension'] == 'bmp' || $path_parts['extension'] == 'png' || $path_parts['extension'] == 'pdf')
 					$result[] = $uri;
 			}
 		}
