@@ -18,7 +18,7 @@ The plugin shows a number next to the title of posts that contain external image
 
 Version 1.5.x and above: Released by [VR51](https://github.com/VR51/Import-External-Images-2).
 
-This plugin is based Import External Images by Marty Thornley https://github.com/MartyThornley/import-external-images, which is based on "Add Linked Images to Gallery" plugin by http://www.bbqiguana.com/
+This plugin is based on Import External Images by Marty Thornley https://github.com/MartyThornley/import-external-images, which is based on the "Add Linked Images to Gallery" plugin by http://www.bbqiguana.com/.
 
 = Donate =
 
@@ -60,6 +60,17 @@ Sometimes pages need to be visited by the admin user before images will import. 
 Use the site's sitemap to visit pages or use the 'view' button next to each post in the bulk options page then run the importer again.
 
 == Changelog ==
+
+= 2.0.4 =
+
+- Removed external_image_getext(). Appears not to be used anywhere in the plugin code so deemed redundent.
+- Changed title of function is_external_file() to is_allowed_file(). This new name better suits the functions purpose.
+- Edited is_allowed_file(). Combine the arrays $allowed and $allowedAlso into single $allowed. Introduced foreach loop.
+- Reduced duplicate checks against is_allowed_file. Props [Ivan0xFF](https://github.com/Ivan0xFF) for noticing the superflorous checks.
+- Edited external_image_get_img_tags() to fix issues fetching some remote images with query strings in the URLs. Props [Ivan0xFF](https://github.com/Ivan0xFF) for this fix.
+- Fixed default options initialisation. Added add_option() configs. No idea how I missed this initially.
+- Added view and edit buttons to import results page.
+- Prefixed all functions and CSS with vr_
 
 = 2.0.3 =
 
