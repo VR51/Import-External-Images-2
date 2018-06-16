@@ -2,7 +2,7 @@
 /*
 Plugin Name: Import External Images 2
 Plugin URI:  https://github.com/VR51/import-external-images-2
-Version: 2.0.4
+Version: 2.0.5
 Description: Examines the text of posts and pages and makes local copies of all the external images linked though IMG tags, adding them as media attachments to the post or page.
 Author: VR51, Marty Thornley
 Author URI: https://github.com/VR51/import-external-images-2
