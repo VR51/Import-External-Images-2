@@ -8,7 +8,7 @@ Requires at least: 3.2
 Tested up to: 4.9.4
 Stable tag: trunk
 
-=== Import External Images 2 ===
+=== Import External Images 2 v2.0.5 ===
 
 Makes local copies of all externally linked images and (Optionally) PDFs in a post or page.
 
@@ -66,6 +66,10 @@ Sometimes pages need to be visited by the admin user before images will import. 
 Use the site's sitemap to visit pages or use the 'view' button next to each post in the bulk options page then run the importer again.
 
 == Changelog ==
+= 2.0.5 =
+
+- Bugfix: querystrings no longer prevent image import. Thank you [rothkj1022](https://github.com/rothkj1022)
+- Bugfix: image URLs without a protocol no longer prevent image import. Thank you [rothkj1022](https://github.com/rothkj1022).
 
 = 2.0.4 =
 
