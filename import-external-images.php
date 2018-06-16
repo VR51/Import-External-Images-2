@@ -262,6 +262,7 @@ function vr_import_external_images_per_post() {
 }
 
 function vr_is_allowed_file( $file ) {
+	$file = strtok($file, '?'); //strip off querystring
 
 	$allowed = array( '.jpg' , '.jpe', '.jpeg', '.png', '.bmp' , '.gif',  '.pdf' );
 	
@@ -356,14 +357,21 @@ function vr_external_image_sideload( $file, $post_id, $desc = null ) {
 		if ( ! empty( $file ) ) {
 
 				// Set variables for storage, fix file filename for query strings.
-				preg_match( '/[^\?]+\.(jpe?g|jpe|gif|png|pdf)\b/i', $file, $matches );
+				preg_match( '/[^\?]+\.(jpe?g|jpe|gif|png|pdf)[\?]?.*\b/i', $file, $matches );
 				if ( ! $matches ) {
 						return new WP_Error( 'image_sideload_failed', __( 'Invalid image URL' ) );
 				}
 
+				//prepend http/https if necessary (fix for urls that start with //)
+				$downloadUrl = $file;
+				if (substr($downloadUrl, 0, 2) == '//') {
+					$scheme = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https" : "http");
+					$downloadUrl = $scheme.':'.$downloadUrl;
+				}
+
 				$file_array = array();
-				$file_array['name'] = basename( $matches[0] );
-				$file_array['tmp_name'] = download_url( $file );
+				$file_array['name'] = basename( strtok($matches[0], '?') );
+				$file_array['tmp_name'] = download_url( $downloadUrl );
 
 				// If error storing temporarily, unlink.
 				if ( is_wp_error( $file_array['tmp_name'] ) ) {
@@ -414,22 +422,23 @@ function vr_external_image_get_img_tags( $post_id ) {
 
 	for ( $i=0; $i<count($matches[0]); $i++ ) {
 		$uri = $matches[1][$i];
-		$url_parts = parse_url($uri);
+		$uriCheck = strtok($uri, '?'); //strip the querystring if it has one
+		$url_parts = parse_url($uriCheck);
 		$path_parts = pathinfo($url_parts['path']);
 
 		// check all excluded urls
 		if ( is_array( $excludes ) ) {
 			foreach( $excludes as $exclude ) {
 				$trim = trim( $exclude );
-				if ( $trim !='' && strpos( $uri , $trim ) != false )
-					$uri = '';
+				if ( $trim !='' && strpos( $uriCheck , $trim ) != false )
+					$uriCheck = '';
 			}
 		}
 
 		//only check FQDNs
-		if ( $uri != '' && preg_match( '/^https?:\/\//' , $uri ) ) {
+		if ( $uriCheck != '' && preg_match( '/^\/\//' , $uri ) ) {
 			//make sure it's external
-			if ( $s != substr( $uri , 0 , strlen( $s ) ) && ( !isset( $mapped ) || $mapped != substr( $uri , 0 , strlen( $mapped ) ) ) ) {
+			if ( $s != substr( $uriCheck , 0 , strlen( $s ) ) && ( !isset( $mapped ) || $mapped != substr( $uriCheck , 0 , strlen( $mapped ) ) ) ) {
 				$path_parts['extension'] = (isset($path_parts['extension'])) ? strtolower($path_parts['extension']) : false;
 				if ( $path_parts['extension'] == 'gif' || $path_parts['extension'] == 'jpg' ||  $path_parts['extension'] == 'jpeg' || $path_parts['extension'] == 'bmp' || $path_parts['extension'] == 'png' || $path_parts['extension'] == 'pdf') {
 						$result[] = $uri;
