@@ -264,7 +264,12 @@ function vr_import_external_images_per_post() {
 function vr_is_allowed_file( $file ) {
 	$file = strtok($file, '?'); //strip off querystring
 
-	$allowed = array( '.jpg' , '.jpe', '.jpeg', '.png', '.bmp' , '.gif' , '.pdf' );
+	$allowed = get_option( 'vr_file_type_includes' );
+	$allowed = explode( ',' , $allowed );
+
+	if( !is_array($allowed) || empty($allowed) ) {
+		$allowed = array( '.jpg' , '.jpe', '.jpeg', '.png', '.bmp' , '.gif' , '.pdf' );
+	}
 	
 	foreach ( $allowed as $ext ) {
 		$c = strlen($ext);
@@ -615,6 +620,10 @@ function vr_external_image_options() {
 				<p><label for="vr_external_image_includes">Domains to include (comma separated):</label></p>
 				<p class="howto">Example: smugmug.com, flickr.com, picassa.com, photobucket.com, facebook.com</p>
 				<p><textarea style="height:90px; width: 90%;" id="vr_external_image_includes" name="vr_external_image_includes"><?php echo ( get_option('vr_external_image_includes') != '' ? get_option('vr_external_image_includes') : '' ); ?></textarea></p>
+
+				<p><label for="vr_file_type_includes">File types to include:</label></p>
+				<p class="howto">Default: .jpg, .jpe, .jpeg, .png, .bmp, .gif, .pdf</p>
+				<p><textarea style="height:90px; width: 90%;" id="vr_file_type_includes" name="vr_file_type_includes"><?php echo ( get_option('vr_file_type_includes') != '' ? get_option('vr_file_type_includes') : '.jpg, .jpe, .jpeg, .png, .bmp, .gif, .pdf' ); ?></textarea></p>
 
 				<div class="submit">
 					<input type="hidden" name="vr_external_image_update" value="action" />
