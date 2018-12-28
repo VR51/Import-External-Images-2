@@ -264,14 +264,16 @@ function vr_import_external_images_per_post() {
 function vr_is_allowed_file( $file ) {
 	$file = strtok($file, '?'); //strip off querystring
 
-	$allowed = get_option( 'vr_file_type_includes' );
-	$allowed = explode( ',' , $allowed );
+	$allowed = trim(get_option( 'vr_file_type_includes' ));
 
-	if( !is_array($allowed) || empty($allowed) ) {
+	if(empty($allowed))  {
 		$allowed = array( '.jpg' , '.jpe', '.jpeg', '.png', '.bmp' , '.gif' , '.pdf' );
+	} else {
+		$allowed = explode( ',' , $allowed );
 	}
 	
 	foreach ( $allowed as $ext ) {
+		$ext = trim($ext);
 		$c = strlen($ext);
 		if ( substr( strtolower($file), -$c ) == $ext ) {
 			return true;
@@ -571,6 +573,7 @@ function vr_external_image_options() {
 				update_option('vr_external_image_whichimgs', esc_html( $_POST['vr_external_image_whichimgs'] ) );
 				update_option('vr_external_image_excludes', esc_html( $_POST['vr_external_image_excludes'] ) );
 				update_option('vr_external_image_includes', esc_html( $_POST['vr_external_image_includes'] ) );
+				update_option('vr_file_type_includes', esc_html( $_POST['vr_file_type_includes'] ) );
 				update_option('vr_external_image_images_count_custom', esc_html( $_POST['vr_external_image_images_count_custom'] ) );
 				update_option('vr_external_image_posts_count_custom', esc_html( $_POST['vr_external_image_posts_count_custom'] ) );
 
