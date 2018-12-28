@@ -412,6 +412,9 @@ function vr_external_image_get_img_tags( $post_id ) {
 	$excludes = get_option( 'vr_external_image_excludes' );
 	$excludes = explode( ',' , $excludes );
 
+	$includes = get_option( 'vr_external_image_includes' );
+	$includes = explode( ',' , $includes );
+
 
 	$result = array();
 	preg_match_all( '/<img[^>]* src=[\'"]?([^>\'" ]+)/' , $post->post_content , $matches );
@@ -431,6 +434,14 @@ function vr_external_image_get_img_tags( $post_id ) {
 			foreach( $excludes as $exclude ) {
 				$trim = trim( $exclude );
 				if ( $trim !='' && strpos( $uriCheck , $trim ) != false )
+					$uriCheck = '';
+			}
+		}
+		// check all included urls
+		if ( is_array( $includes ) ) {
+			foreach( $includes as $include ) {
+				$trim = trim( $include );
+				if ( $trim !='' && strpos( $uriCheck , $trim ) == false )
 					$uriCheck = '';
 			}
 		}
@@ -554,6 +565,7 @@ function vr_external_image_options() {
 			} elseif ( isset( $_POST['action'] ) && $_POST['action'] == 'update' ) {
 				update_option('vr_external_image_whichimgs', esc_html( $_POST['vr_external_image_whichimgs'] ) );
 				update_option('vr_external_image_excludes', esc_html( $_POST['vr_external_image_excludes'] ) );
+				update_option('vr_external_image_includes', esc_html( $_POST['vr_external_image_includes'] ) );
 				update_option('vr_external_image_images_count_custom', esc_html( $_POST['vr_external_image_images_count_custom'] ) );
 				update_option('vr_external_image_posts_count_custom', esc_html( $_POST['vr_external_image_posts_count_custom'] ) );
 
@@ -599,6 +611,10 @@ function vr_external_image_options() {
 				<p><label for="myradio2">Domains to exclude (comma separated):</label></p>
 				<p class="howto">Example: smugmug.com, flickr.com, picassa.com, photobucket.com, facebook.com</p>
 				<p><textarea style="height:90px; width: 90%;" id="vr_external_image_excludes" name="vr_external_image_excludes"><?php echo ( get_option('vr_external_image_excludes') != '' ? get_option('vr_external_image_excludes') : '' ); ?></textarea></p>
+
+				<p><label for="myradio2">Domains to include (comma separated):</label></p>
+				<p class="howto">Example: smugmug.com, flickr.com, picassa.com, photobucket.com, facebook.com</p>
+				<p><textarea style="height:90px; width: 90%;" id="vr_external_image_includes" name="vr_external_image_includes"><?php echo ( get_option('vr_external_image_includes') != '' ? get_option('vr_external_image_includes') : '' ); ?></textarea></p>
 
 				<div class="submit">
 					<input type="hidden" name="vr_external_image_update" value="action" />
