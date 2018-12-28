@@ -264,7 +264,7 @@ function vr_import_external_images_per_post() {
 function vr_is_allowed_file( $file ) {
 	$file = strtok($file, '?'); //strip off querystring
 
-	$allowed = array( '.jpg' , '.jpe', '.jpeg', '.png', '.bmp' , '.gif' /*,  '.pdf'*/ );
+	$allowed = array( '.jpg' , '.jpe', '.jpeg', '.png', '.bmp' , '.gif' , '.pdf' );
 	
 	foreach ( $allowed as $ext ) {
 		$c = strlen($ext);
