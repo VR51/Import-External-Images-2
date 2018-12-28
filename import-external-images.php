@@ -170,7 +170,7 @@ function vr_external_image_import_all_ajax() {
 	if ($response) {
 		$results = '<strong>' . $postTitle . ':</strong> Images imported successfully and image links localised (<a href="' . $postGUID . '" class="button-link" target="_blank">View</a> | <a href="' . $postView . '" class="button-link" target="_blank">Edit</a>).';
 	} else {
-		$results = "<strong>$postTitle:</strong> No images imported. Check whether they still exist!";
+		$results = '<strong>' . $postTitle . ':</strong> No images imported. Check whether they still exist! (<a href="' . $postGUID . '" class="button-link" target="_blank">View</a> | <a href="' . $postView . '" class="button-link" target="_blank">Edit</a>).';
 	}
 
 	echo json_encode($results);
