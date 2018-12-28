@@ -608,11 +608,11 @@ function vr_external_image_options() {
 				</label>
 				</p>
 				
-				<p><label for="myradio2">Domains to exclude (comma separated):</label></p>
+				<p><label for="vr_external_image_excludes">Domains to exclude (comma separated):</label></p>
 				<p class="howto">Example: smugmug.com, flickr.com, picassa.com, photobucket.com, facebook.com</p>
 				<p><textarea style="height:90px; width: 90%;" id="vr_external_image_excludes" name="vr_external_image_excludes"><?php echo ( get_option('vr_external_image_excludes') != '' ? get_option('vr_external_image_excludes') : '' ); ?></textarea></p>
 
-				<p><label for="myradio2">Domains to include (comma separated):</label></p>
+				<p><label for="vr_external_image_includes">Domains to include (comma separated):</label></p>
 				<p class="howto">Example: smugmug.com, flickr.com, picassa.com, photobucket.com, facebook.com</p>
 				<p><textarea style="height:90px; width: 90%;" id="vr_external_image_includes" name="vr_external_image_includes"><?php echo ( get_option('vr_external_image_includes') != '' ? get_option('vr_external_image_includes') : '' ); ?></textarea></p>
 
