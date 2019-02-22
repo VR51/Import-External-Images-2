@@ -170,7 +170,7 @@ function vr_external_image_import_all_ajax() {
 	if ($response) {
 		$results = '<strong>' . $postTitle . ':</strong> Images imported successfully and image links localised (<a href="' . $postGUID . '" class="button-link" target="_blank">View</a> | <a href="' . $postView . '" class="button-link" target="_blank">Edit</a>).';
 	} else {
-		$results = "<strong>$postTitle:</strong> No images imported. Check whether they still exist!";
+		$results = '<strong>' . $postTitle . ':</strong> No images imported. Check whether they still exist! (<a href="' . $postGUID . '" class="button-link" target="_blank">View</a> | <a href="' . $postView . '" class="button-link" target="_blank">Edit</a>).';
 	}
 
 	echo json_encode($results);
@@ -264,9 +264,16 @@ function vr_import_external_images_per_post() {
 function vr_is_allowed_file( $file ) {
 	$file = strtok($file, '?'); //strip off querystring
 
-	$allowed = array( '.jpg' , '.jpe', '.jpeg', '.png', '.bmp' , '.gif',  '.pdf' );
+	$allowed = trim(get_option( 'vr_file_type_includes' ));
+
+	if(empty($allowed))  {
+		$allowed = array( '.jpg' , '.jpe', '.jpeg', '.png', '.bmp' , '.gif' , '.pdf' );
+	} else {
+		$allowed = explode( ',' , $allowed );
+	}
 	
 	foreach ( $allowed as $ext ) {
+		$ext = trim($ext);
 		$c = strlen($ext);
 		if ( substr( strtolower($file), -$c ) == $ext ) {
 			return true;
@@ -412,6 +419,9 @@ function vr_external_image_get_img_tags( $post_id ) {
 	$excludes = get_option( 'vr_external_image_excludes' );
 	$excludes = explode( ',' , $excludes );
 
+	$includes = get_option( 'vr_external_image_includes' );
+	$includes = explode( ',' , $includes );
+
 
 	$result = array();
 	preg_match_all( '/<img[^>]* src=[\'"]?([^>\'" ]+)/' , $post->post_content , $matches );
@@ -431,6 +441,14 @@ function vr_external_image_get_img_tags( $post_id ) {
 			foreach( $excludes as $exclude ) {
 				$trim = trim( $exclude );
 				if ( $trim !='' && strpos( $uriCheck , $trim ) != false )
+					$uriCheck = '';
+			}
+		}
+		// check all included urls
+		if ( is_array( $includes ) ) {
+			foreach( $includes as $include ) {
+				$trim = trim( $include );
+				if ( $trim !='' && strpos( $uriCheck , $trim ) == false )
 					$uriCheck = '';
 			}
 		}
@@ -554,6 +572,8 @@ function vr_external_image_options() {
 			} elseif ( isset( $_POST['action'] ) && $_POST['action'] == 'update' ) {
 				update_option('vr_external_image_whichimgs', esc_html( $_POST['vr_external_image_whichimgs'] ) );
 				update_option('vr_external_image_excludes', esc_html( $_POST['vr_external_image_excludes'] ) );
+				update_option('vr_external_image_includes', esc_html( $_POST['vr_external_image_includes'] ) );
+				update_option('vr_file_type_includes', esc_html( $_POST['vr_file_type_includes'] ) );
 				update_option('vr_external_image_images_count_custom', esc_html( $_POST['vr_external_image_images_count_custom'] ) );
 				update_option('vr_external_image_posts_count_custom', esc_html( $_POST['vr_external_image_posts_count_custom'] ) );
 
@@ -596,9 +616,17 @@ function vr_external_image_options() {
 				</label>
 				</p>
 				
-				<p><label for="myradio2">Domains to exclude (comma separated):</label></p>
+				<p><label for="vr_external_image_excludes">Domains to exclude (comma separated):</label></p>
 				<p class="howto">Example: smugmug.com, flickr.com, picassa.com, photobucket.com, facebook.com</p>
 				<p><textarea style="height:90px; width: 90%;" id="vr_external_image_excludes" name="vr_external_image_excludes"><?php echo ( get_option('vr_external_image_excludes') != '' ? get_option('vr_external_image_excludes') : '' ); ?></textarea></p>
+
+				<p><label for="vr_external_image_includes">Domains to include (comma separated):</label></p>
+				<p class="howto">Example: smugmug.com, flickr.com, picassa.com, photobucket.com, facebook.com</p>
+				<p><textarea style="height:90px; width: 90%;" id="vr_external_image_includes" name="vr_external_image_includes"><?php echo ( get_option('vr_external_image_includes') != '' ? get_option('vr_external_image_includes') : '' ); ?></textarea></p>
+
+				<p><label for="vr_file_type_includes">File types to include:</label></p>
+				<p class="howto">Default: .jpg, .jpe, .jpeg, .png, .bmp, .gif, .pdf</p>
+				<p><textarea style="height:90px; width: 90%;" id="vr_file_type_includes" name="vr_file_type_includes"><?php echo ( get_option('vr_file_type_includes') != '' ? get_option('vr_file_type_includes') : '.jpg, .jpe, .jpeg, .png, .bmp, .gif, .pdf' ); ?></textarea></p>
 
 				<div class="submit">
 					<input type="hidden" name="vr_external_image_update" value="action" />
