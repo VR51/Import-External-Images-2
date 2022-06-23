@@ -382,7 +382,10 @@ function vr_external_image_sideload( $file, $post_id, $desc = null ) {
 
 				// If error storing temporarily, unlink.
 				if ( is_wp_error( $file_array['tmp_name'] ) ) {
-					@unlink($file_array['tmp_name']);
+					if ( empty( $file_array['tmp_name']->errors['http_404'] ) ) {
+						@unlink($file_array['tmp_name']);
+					}
+					
 					$file_array['tmp_name'] = '';
 					return false;
 				}
